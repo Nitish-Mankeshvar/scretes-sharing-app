@@ -1,4 +1,5 @@
 const User = require('../model/User');
+const md5 = require('md5');
 
 exports.getLogin = (req, res, next) => {
   res.render('login');
@@ -13,7 +14,7 @@ exports.postLogin = (req, res, next) => {
 
   User.findOne({ name: username })
     .then((user) => {
-      if (user.password === password) {
+      if (md5(password) === user.password) {
         res.render('secrets');
       } else {
         console.log('please enter pass');
@@ -26,7 +27,7 @@ exports.postRegister = (req, res, next) => {
   const { username, password } = req.body;
   const user = new User({
     name: username,
-    password: password,
+    password: md5(password),
   });
   user
     .save()
